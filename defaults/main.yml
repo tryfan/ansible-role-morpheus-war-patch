@@ -1,0 +1,7 @@
+---
+mwp_morpheus_dir: /opt/morpheus
+mwp_morpheus_war_dir: "{{ mwp_morpheus_dir }}/lib/morpheus"
+mwp_war_temp_file: "{{ mwp_morpheus_war_dir }}/morpheus-ui.war.new"
+mwp_remote_war_url: ''
+mwp_morpheus_owner: "morpheus-app"
+mwp_morpheus_group: "morpheus-app"

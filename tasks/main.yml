@@ -1,0 +1,39 @@
+---
+- name: Copy WAR file from remote
+  get_url:
+    url: "{{ mwp_remote_war_url }}"
+    dest: "{{ mwp_war_temp_file }}"
+    owner: "{{ mwp_morpheus_owner }}"
+    group: "{{ mwp_morpheus_group }}"
+    mode: 0644
+
+- name: Get checksum of original war file
+  stat:
+    path: "{{ mwp_morpheus_war_dir }}/morpheus-ui.war"
+  register: original_file
+
+- name: Get checksum of new war file
+  stat:
+    path: "{{ mwp_war_temp_file }}"
+  register: new_file
+
+- name: Set fact if the two files are different
+  set_fact:
+    proceed_with_upgrade: true
+  when: original_file.stat.checksum != new_file.stat.checksum
+
+- name: Stop Morpheus UI
+  command: "morpheus-ctl stop morpheus-ui"
+
+- name: Delay to allow for full stop
+  pause: 
+    seconds: 15
+
+- name: Copy new war over existing
+  copy:
+    remote_src: true
+    src: "{{ mwp_war_temp_file }}"
+    dest: "{{ mwp_morpheus_war_dir }}/morpheus-ui.war"
+
+- name: Start Morpheus UI
+  command: morpheus-ctl start morpheus-ui
