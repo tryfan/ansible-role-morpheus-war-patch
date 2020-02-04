@@ -19,21 +19,24 @@
 
 - name: Set fact if the two files are different
   set_fact:
-    proceed_with_upgrade: true
+    mwp_proceed_with_upgrade: true
   when: original_file.stat.checksum != new_file.stat.checksum
 
-- name: Stop Morpheus UI
-  command: "morpheus-ctl stop morpheus-ui"
+- name: If files are different, proceed with upgrade
+  block:
+    - name: Stop Morpheus UI
+      command: "morpheus-ctl stop morpheus-ui"
 
-- name: Delay to allow for full stop
-  pause: 
-    seconds: 15
+    - name: Delay to allow for full stop
+      pause: 
+        seconds: 15
 
-- name: Copy new war over existing
-  copy:
-    remote_src: true
-    src: "{{ mwp_war_temp_file }}"
-    dest: "{{ mwp_morpheus_war_dir }}/morpheus-ui.war"
+    - name: Copy new war over existing
+      copy:
+        remote_src: true
+        src: "{{ mwp_war_temp_file }}"
+        dest: "{{ mwp_morpheus_war_dir }}/morpheus-ui.war"
 
-- name: Start Morpheus UI
-  command: morpheus-ctl start morpheus-ui
+    - name: Start Morpheus UI
+      command: morpheus-ctl start morpheus-ui
+  when: mwp_proceed_with_upgrade

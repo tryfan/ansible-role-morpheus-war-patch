@@ -5,3 +5,4 @@ mwp_war_temp_file: "{{ mwp_morpheus_war_dir }}/morpheus-ui.war.new"
 mwp_remote_war_url: ''
 mwp_morpheus_owner: "morpheus-app"
 mwp_morpheus_group: "morpheus-app"
+mwp_proceed_with_upgrade: false
